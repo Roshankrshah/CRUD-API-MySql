@@ -1,30 +1,30 @@
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded', () => {
     fetch('http://localhost:3000/getAll')
-    .then(res => res.json())
-    .then(data => loadHTMLTable(data['data']));
-    
+        .then(res => res.json())
+        .then(data => loadHTMLTable(data['data']));
+
 });
 
 const addBtn = document.querySelector('#add-name-btn');
 
-addBtn.addEventListener('click',()=>{
+addBtn.addEventListener('click', () => {
     const nameInput = document.querySelector('#name-input');
 
     const name = nameInput.value;
     nameInput.value = '';
 
-    fetch('http://localhost:3000/insert',{
+    fetch('http://localhost:3000/insert', {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'
         },
-        body: JSON.stringify({name: name})
+        body: JSON.stringify({ name: name })
     })
-    .then(res => res.json())
-    .then(data => insertRowIntoTable(data['data']))
+        .then(res => res.json())
+        .then(data => insertRowIntoTable(data['data']))
 })
 
-function insertRowIntoTable(data){
+function insertRowIntoTable(data) {
     const table = document.querySelector('table tbody');
     const isTableData = table.querySelector('.no-data');
 
@@ -44,25 +44,25 @@ function insertRowIntoTable(data){
 
     tableHtml += "</tr>";
 
-    if(isTableData){
+    if (isTableData) {
         table.innerHTML = tableHtml;
-    }else{
+    } else {
         const newRow = table.insertRow();
         newRow.innerHTML = tableHtml;
     }
 
-}   
+}
 
-function loadHTMLTable(data){
+function loadHTMLTable(data) {
     const table = document.querySelector('table tbody');
-    
-    if(data.length === 0){
+
+    if (data.length === 0) {
         table.innerHTML = `<tr><td class="no-data" colspan="5">No Data</td></tr>`;
         return;
-    }   
+    }
     let tableHtml = "";
 
-    data.forEach(({id,name,data_added})=>{
+    data.forEach(({ id, name, data_added }) => {
         tableHtml += `
             <tr>
                 <td> ${id}</td>
@@ -73,4 +73,25 @@ function loadHTMLTable(data){
             </tr>`;
     });
     table.innerHTML = tableHtml;
+}
+
+document.querySelector('table tbody').addEventListener('click', function (event) {
+    if (event.target.className === "delete-row-btn") {
+        deleteRowById(event.target.dataset.id);
+    }
+    if (event.target.className === "edit-row-btn") {
+        handleEditRow(event.target.dataset.id);
+    }
+});
+
+function deleteRowById(id) {
+    fetch('http://localhost:3000/delete/' + id, {
+        method: 'DELETE'
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        });
 }

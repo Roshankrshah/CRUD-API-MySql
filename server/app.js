@@ -35,6 +35,19 @@ app.get('/getAll',(req,res)=>{
     .catch(err => console.log(err));
 });
 
+//Delete
+app.delete('/delete/:id',(req,res)=>{
+    const {id} = req.params;
+    
+    const db = dbService.getDbServiceInstance();
+
+    const result = db.deleteRowById(id);
+
+    result
+    .then(data => res.json({success: data}))
+    .catch(err=> console.log(err));
+})
+
 
 const port = 3000|| process.env.PORT;
 
