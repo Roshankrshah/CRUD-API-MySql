@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 let instance = null;
-let id = 4;
+
 const connection = mysql.createConnection({
     host: process.env.HOST,
     user: process.env.USER,
@@ -43,16 +43,16 @@ class DbService {
         try {
             const dataAdded = new Date();
             const insertId = await new Promise((resolve, reject) => {
-                const query = "INSERT INTO account (id,name,data_added) VALUES (?,?,?);";
+                const query = "INSERT INTO account (name,data_added) VALUES (?,?);";
 
-                connection.query(query, [id, name, dataAdded], (err, result) => {
+                connection.query(query, [name, dataAdded], (err, result) => {
                     if (err) reject(new Error(err.message));
                     resolve(result.insertId);
                 })
             });
-            id += 1;
+
             return {
-                id: id,
+                id: insertId,
                 name: name,
                 dataAdded: dataAdded
             }
