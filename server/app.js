@@ -48,6 +48,18 @@ app.delete('/delete/:id',(req,res)=>{
     .catch(err=> console.log(err));
 })
 
+//Edit
+app.patch('/update', (req, res) => {
+    const { id, name } = req.body;
+    const db = dbService.getDbServiceInstance();
+
+    const result = db.updateNameById(id, name);
+    
+    result
+    .then(data => res.json({success : data}))
+    .catch(err => console.log(err));
+});
+
 
 const port = 3000|| process.env.PORT;
 

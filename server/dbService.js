@@ -45,7 +45,7 @@ class DbService {
             const insertId = await new Promise((resolve, reject) => {
                 const query = "INSERT INTO account (id,name,data_added) VALUES (?,?,?);";
 
-                connection.query(query,[id,name, dataAdded], (err, result) => {
+                connection.query(query, [id, name, dataAdded], (err, result) => {
                     if (err) reject(new Error(err.message));
                     resolve(result.insertId);
                 })
@@ -61,22 +61,42 @@ class DbService {
         }
     }
 
-    async deleteRowById(id){
-        id = parseInt(id,10);
+    async deleteRowById(id) {
+        id = parseInt(id, 10);
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const query = 'DELETE FROM account WHERE id = ?';
 
-        const response = await new Promise((resolve,reject)=>{
-            const query = 'DELETE FROM account WHERE id = ?';
+                connection.query(query, [id], (err, result) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(result.affectedRows);
+                })
+            });
 
-            connection.query(query,[id],(err,result)=>{
-                if(err) reject(new Error(err.message));
-                resolve(result.affectedRows);
-            })
-        });
+            return response === 1 ? true : false;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
 
-        return response === 1 ? true: false;
-    }catch(error){
-        console.log(error);
-        return false;
+    async updateNameById(id, name) {
+        try {
+            id = parseInt(id, 10);
+            const response = await new Promise((resolve, reject) => {
+                const query = "UPDATE account SET name = ? WHERE id = ?";
+
+                connection.query(query, [name, id], (err, result) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(result.affectedRows);
+                })
+            });
+
+            return response === 1 ? true : false;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
     }
 }
 
