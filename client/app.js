@@ -9,6 +9,14 @@ const addBtn = document.querySelector('#add-name-btn');
 const updateBtn = document.querySelector('#update-row-btn');
 const searchBtn = document.querySelector('#search-btn');
 
+searchBtn.onclick = function () {
+    const searchValue = document.querySelector('#search-input').value;
+
+    fetch('http://localhost:3000/search/' + searchValue)
+        .then(response => response.json())
+        .then(data => loadHTMLTable(data['data']));
+}
+
 addBtn.addEventListener('click', () => {
     const nameInput = document.querySelector('#name-input');
 
